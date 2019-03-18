@@ -1,0 +1,44 @@
+---
+# tasks file for jenkins
+ - name: Install add-apt-repository
+   apt:
+     name: software-properties-common
+     state: latest
+
+ - name: installing repo for Java 8 in Ubuntu
+   apt_repository:
+     repo: 'ppa:webupd8team/java'
+     state: present
+     update_cache: yes
+ 
+ - name: oracle-java8-installer
+   debconf:
+     name: "oracle-java8-installer"    
+     question: "shared/accepted-oracle-license-v1-1"
+     value: "true"
+     vtype: "select"
+
+ - name: Installing Java 8
+   apt:
+     name: oracle-java8-installer
+     state: present
+
+ - name: install java8
+   apt: name=oracle-java8-set-default update_cache=yes state=latest
+
+ - name: Configure apt key for jenkins repository
+   apt_key:
+     url: "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
+     state: present
+
+ - name: Add jenkins APT repository
+   apt_repository:
+     repo: 'deb http://pkg.jenkins-ci.org/debian binary/'
+     state: present
+     update_cache: true
+
+ - name: Run the equivalent of "apt-get update" as a separate step
+   apt: update_cache=yes
+
+ - name: install jenkins
+   apt: name=jenkins update_cache=yes state=present

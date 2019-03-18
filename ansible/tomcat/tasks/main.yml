@@ -1,0 +1,10 @@
+- name: install tomcat
+  apt: name=tomcat8 update_cache=yes state=latest
+- name: changing port
+  sudo: yes
+  copy: 
+        src: server.xml 
+        dest: /etc/tomcat8/server.xml
+        force: yes
+- name: restart tomcat
+  service: name=tomcat8 state=restarted
